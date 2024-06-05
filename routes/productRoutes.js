@@ -49,7 +49,7 @@ router.get("/get-product", getProductController);
 router.get("/get-product/:slug", getSingleProductController);
 
 //get photo
-router.get("/product-photo/:pid", productPhotoController);
+// router.get("/product-photo/:pid", productPhotoController);
 
 //delete rproduct
 router.delete("/delete-product/:pid", deleteProductController);
@@ -57,20 +57,7 @@ router.delete("/delete-product/:pid", deleteProductController);
 //filter product
 router.post("/product-filters", productFiltersController);
 
-// filter by category TV
-router.get("/category-tv", productsByCategoryTVController);
 
-// filter by category mobiles
-router.get("/category-mobiles", productsByCategoryMobilesController);
-
-// filter by category laptops
-router.get("/category-laptops", productsByCategoryLaptopsController);
-
-// filter by category headphones
-router.get("/category-headphones", productsByCategoryHeadphonesController);
-
-// filter by category watches
-router.get("/category-watches", productsByCategoryWatchesController);
 
 //product count
 router.get("/product-count", productCountController);
@@ -87,12 +74,7 @@ router.get("/related-product/:pid/:cid", realtedProductController);
 //category wise product
 router.get("/product-category/:slug", productCategoryController);
 
-//payments routes
-//token
-router.get("/braintree/token", braintreeTokenController);
 
-//payments
-router.post("/braintree/payment", requireSignIn, brainTreePaymentController);
 
 
 

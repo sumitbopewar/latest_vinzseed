@@ -19,34 +19,46 @@ dotenv.config();
 
 export const createProductController = async (req, res) => {
   try {
-    const { name, brand, description, price, category, quantity, shipping } =
+    const { productName, brand, description, price, oldPrice, discount, weight, rating,  category, catImg, productImages,  quantity, shipping } =
       req.fields;
-    const { photo } = req.files;
-    //alidation
+    // const { photo } = req.files;
+    //Validation
     switch (true) {
-      case !name:
+      case !productName:
         return res.status(500).send({ error: "Name is Required" });
       case !brand:
-        return res.status(500).send({ error: "Name is Required" });
+        return res.status(500).send({ error: "brand is Required" });
       case !description:
         return res.status(500).send({ error: "Description is Required" });
       case !price:
         return res.status(500).send({ error: "Price is Required" });
+      case !oldPrice:
+        return res.status(500).send({ error: "oldPrice is Required" });
+      case !discount:
+        return res.status(500).send({ error: "discount is Required" });
+      case !weight:
+        return res.status(500).send({ error: "weight is Required" });
+      case !rating:
+        return res.status(500).send({ error: "rating is Required" });
+      case !catImg:
+        return res.status(500).send({ error: "catimg is Required" });
+      case !productImages:
+        return res.status(500).send({ error: "productimage is Required" });
       case !category:
         return res.status(500).send({ error: "Category is Required" });
       case !quantity:
         return res.status(500).send({ error: "Quantity is Required" });
-      case photo && photo.size > 1000000:
-        return res
-          .status(500)
-          .send({ error: "photo is Required and should be less then 1mb" });
+      // case photo && photo.size > 1000000:
+      //   return res
+      //     .status(500)
+      //     .send({ error: "photo is Required and should be less then 1mb" });
     }
 
-    const products = new productModel({ ...req.fields, slug: slugify(name) });
-    if (photo) {
-      products.photo.data = fs.readFileSync(photo.path);
-      products.photo.contentType = photo.type;
-    }
+    const products = new productModel({ ...req.fields, slug: slugify(productName) });
+    // if (photo) {
+    //   products.photo.data = fs.readFileSync(photo.path);
+    //   products.photo.contentType = photo.type;
+    // }
     await products.save();
     res.status(201).send({
       success: true,
