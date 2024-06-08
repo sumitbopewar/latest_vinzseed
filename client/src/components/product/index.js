@@ -45,7 +45,7 @@ const Product = (props) => {
             {
                 productData !== undefined &&
                 <>
-                    <Link to={`/product/${productData.id}`}>
+                    <Link to={`/product/${productData.slug}`}>
                         <div className='imgWrapper'>
                             <div className='p-4 wrapper mb-3'>
                                 <img src={productData.catImg+'?im=Resize=(420,420)'} className='w-100' />

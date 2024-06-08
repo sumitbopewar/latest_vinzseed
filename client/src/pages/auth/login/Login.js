@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, useLocation, Link } from "react-router-dom";
-import toast from "react-hot-toast";
+import {toast , Toaster} from "react-hot-toast";
 import { useAuth } from "../../../context/auth";
 import "./Login.css";
 import Backdrop from '@mui/material/Backdrop';
@@ -69,6 +69,7 @@ const Login = () => {
 
   return (
     <>
+      <Toaster position="bottom-center" />
             <section className='signIn mb-5'>
                 <div class="breadcrumbWrapper">
                     <div class="container-fluid">

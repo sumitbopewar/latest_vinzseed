@@ -257,11 +257,6 @@ const DetailsPage = (props) => {
         setIsadded(true);
     }
 
-
-
-
-
-
     const getCartData = async (url) => {
         try {
             await axios.get(url).then((response) => {
@@ -279,6 +274,14 @@ const DetailsPage = (props) => {
             console.log(error.message);
         }
     }
+
+
+    // new code is for api
+
+    
+
+
+
 
     return (
         <>
