@@ -1,65 +1,73 @@
-import React, { useEffect, useContext } from 'react';
-import './nav.css';
-import { Link } from 'react-router-dom';
-import Button from '@mui/material/Button';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import GridViewIcon from '@mui/icons-material/GridView';
-import HeadphonesOutlinedIcon from '@mui/icons-material/HeadphonesOutlined';
-import { useState } from 'react';
-import { MyContext } from '../../../App';
+import React, { useEffect, useContext } from "react";
+import "./nav.css";
+import { Link } from "react-router-dom";
+import Button from "@mui/material/Button";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import GridViewIcon from "@mui/icons-material/GridView";
+import HeadphonesOutlinedIcon from "@mui/icons-material/HeadphonesOutlined";
+import { useState } from "react";
+import { MyContext } from "../../../App";
+import { useAuth } from "../../../context/auth";
 
 const Nav = (props) => {
+  const [navData, setNavData] = useState([]);
+  const [isOpenNav, setIsOpenNav] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [openDropdownMenu, setDropdownMenu] = useState(false);
+  const [openDropdownMenuIndex, setDropdownMenuIndex] = useState(null);
 
+  const [openMegaMenu, setOpenMegaMenu] = useState(false);
 
-    const [navData, setNavData] = useState([]);
-    const [isOpenNav, setIsOpenNav] = useState(false);
-    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-    const [openDropdownMenu, setDropdownMenu] = useState(false);
-    const [openDropdownMenuIndex, setDropdownMenuIndex] = useState(null);
+  const context = useContext(MyContext);
 
-    const [openMegaMenu, setOpenMegaMenu] = useState(false);
+  const [auth, setAuth] = useAuth();
 
-    const context = useContext(MyContext);
+  useEffect(() => {
+    setNavData(props.data);
+  }, []);
 
-    useEffect(() => {
-        setNavData(props.data);
-    }, [])
+  useEffect(() => {
+    setIsOpenNav(props.openNav);
+  }, [props.openNav]);
 
-    useEffect(() => {
-        setIsOpenNav(props.openNav)
-    }, [props.openNav])
+  const closeNav = () => {
+    props.closeNav();
+  };
 
+  const openDropdownFun = (index) => {
+    setDropdownMenu(!openDropdownMenu);
+    setDropdownMenuIndex(index);
+  };
 
-    const closeNav=()=>{
-        props.closeNav();
-    }
-
-    const openDropdownFun=(index)=>{
-        setDropdownMenu(!openDropdownMenu)
-        setDropdownMenuIndex(index)
-    }
-
-    return (
-        <>
-            {
-                isOpenNav === true && <div className='navbarOverlay' onClick={props.closeNav}></div>
-            }
-            <div className={`nav d-flex align-items-center ${isOpenNav === true && 'click'}`}>
-                <div className='container-fluid'>
-                    <div className='row position-relative d-flex align-items-center justify-content-center'>
-                        {/* <div className='col-sm-2 part1 d-flex align-items-center'>
+  return (
+    <>
+      {isOpenNav === true && (
+        <div className="navbarOverlay" onClick={props.closeNav}></div>
+      )}
+      <div
+        className={`nav d-flex align-items-center ${
+          isOpenNav === true && "click"
+        }`}
+      >
+        <div className="container-fluid">
+          <div className="row position-relative d-flex align-items-center justify-content-center">
+            {/* <div className='col-sm-2 part1 d-flex align-items-center'>
                             <Button className='bg-g text-white catTab res-hide'>
                                 <GridViewIcon /> &nbsp;Browse All Categories <KeyboardArrowDownIcon /></Button>
                         </div> */}
 
-                        <div className='col-sm-8 part2 position-static'>
-                            <nav className={isOpenNav === true ? 'open' : ''}>
-                                <ul className='list list-inline mb-0'>
-                                    <li className='list-inline-item'>
-                                        <Button><Link to={'/'} onClick={props.closeNav}>Home</Link></Button>
-                                    </li>
-                                    
-                                    {/* {
+            <div className="col-sm-8 part2 position-static">
+              <nav className={isOpenNav === true ? "open" : ""}>
+                <ul className="list list-inline mb-0">
+                  <li className="list-inline-item">
+                    <Button>
+                      <Link to={"/"} onClick={props.closeNav}>
+                        Home
+                      </Link>
+                    </Button>
+                  </li>
+
+                  {/* {
                                         navData.length !== 0 &&
                                         navData.map((item, index) => {
                                             return (
@@ -99,50 +107,74 @@ const Nav = (props) => {
                                         })
                                     } */}
 
-                                    <li className='list-inline-item'>
-                                        <Button onClick={props.closeNav}><Link>About</Link></Button>
-                                    </li>
+                  <li className="list-inline-item">
+                    <Button onClick={props.closeNav}>
+                      <Link>About</Link>
+                    </Button>
+                  </li>
 
+                  <li className="list-inline-item position-static">
+                    <Button onClick={() => setOpenMegaMenu(!openMegaMenu)}>
+                      <Link>
+                        Shop{" "}
+                        <KeyboardArrowDownIcon
+                          className={`${openMegaMenu === true && "rotateIcon"}`}
+                        />
+                      </Link>
+                    </Button>
+                    <div
+                      className={`dropdown_menu megaMenu w-100 ${
+                        openMegaMenu === true && "open"
+                      }`}
+                    >
+                      <div className="row">
+                        {props.data.length !== 0 &&
+                          props.data.map((item, index) => {
+                            return (
+                              <div className="col">
+                                <a href={`/cat/${item.cat_name.toLowerCase()}`}>
+                                  {" "}
+                                  <h4 className="text-g text-capitalize">
+                                    {item.cat_name}
+                                  </h4>
+                                </a>
+                                {item.items.length !== 0 && (
+                                  <ul className="mt-4 mb-0">
+                                    {item.items.map((item_, index) => {
+                                      return (
+                                        <li>
+                                          <Link
+                                            onClick={props.closeNav}
+                                            to={`/cat/${item.cat_name.toLowerCase()}/${item_.cat_name
+                                              .replace(/\s/g, "-")
+                                              .toLowerCase()}`}
+                                          >
+                                            {item_.cat_name}
+                                          </Link>
+                                        </li>
+                                      );
+                                    })}
+                                  </ul>
+                                )}
+                              </div>
+                            );
+                          })}
 
-                                    <li className='list-inline-item position-static'>
-                                        <Button onClick={()=>setOpenMegaMenu(!openMegaMenu)}><Link>Shop <KeyboardArrowDownIcon   className={`${openMegaMenu===true &&  'rotateIcon'}`}/></Link></Button>
-                                        <div className={`dropdown_menu megaMenu w-100 ${openMegaMenu===true && 'open'}`}>
-                                            <div className='row'>
-                                                {
-                                                    props.data.length !== 0 &&
-                                                    props.data.map((item, index) => {
-                                                        return (
-                                                            <div className='col'>
-                                                                <a href={`/cat/${item.cat_name.toLowerCase()}`}> <h4 className='text-g text-capitalize'>{item.cat_name}</h4></a>
-                                                                {
-                                                                    item.items.length !== 0 &&
-                                                                    <ul className='mt-4 mb-0'>
-                                                                        {
-                                                                            item.items.map((item_, index) => {
-                                                                                return (
-                                                                                    <li>
-                                                                                        <Link onClick={props.closeNav} to={`/cat/${item.cat_name.toLowerCase()}/${item_.cat_name.replace(/\s/g, '-').toLowerCase()}`}>{item_.cat_name}</Link>
-                                                                                    </li>
-                                                                                )
-                                                                            })
-                                                                        }
-                                                                    </ul>
-                                                                }
-                                                            </div>
-                                                        )
-                                                    })
-                                                }
-
-                                                <div className='col'>
-                                                    <img src="https://wp.alithemes.com/html/nest/demo/assets/imgs/banner/banner-menu.png" className='w-100' />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li className='list-inline-item'>
-                                        <Button><Link>Blog</Link></Button>
-                                    </li>
-                                    {/* <li className='list-inline-item'>
+                        <div className="col">
+                          <img
+                            src="https://wp.alithemes.com/html/nest/demo/assets/imgs/banner/banner-menu.png"
+                            className="w-100"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                  <li className="list-inline-item">
+                    <Button>
+                      <Link>Blog</Link>
+                    </Button>
+                  </li>
+                  {/* <li className='list-inline-item'>
                                         <Button><Link>Pages  <KeyboardArrowDownIcon /></Link>
                                         </Button>
 
@@ -163,44 +195,83 @@ const Nav = (props) => {
                                         </div>
 
                                     </li> */}
-                                    <li className='list-inline-item'>
-                                        <Button><Link>Contact</Link></Button>
-                                    </li>
-                                </ul>
+                  <li className="list-inline-item">
+                    <Button>
+                      <Link>Contact</Link>
+                    </Button>
+                  </li>
+                </ul>
 
-                                {
-                                    windowWidth < 992 &&
-                                    <>
-                                    {
-                                        context.isLogin!=="true" &&
-                                         <div className='pl-3 pr-3'>
-                                            <br />
-                                            <Link to={'/signIn'}>
-                                                <Button className="btn btn-g btn-lg w-100" onClick={closeNav}>Sign In</Button>
-                                            </Link>
-                                        </div>
-                                    }
-                                       
-                                    </>
-                                }
+                {windowWidth < 992 && (
+                  <>
+                    {/* {context.isLogin !== "true" && (
+                      <div className="pl-3 pr-3">
+                        <br />
+                        {!auth.user ? (
+                          <Link to={"/signIn"}>
+                            <Button
+                              className="btn btn-g btn-lg w-100"
+                              onClick={closeNav}
+                            >
+                              Sign In
+                            </Button>
+                          </Link>
+                        ) : (
+                          <Link to={"/signIn"}>
+                            <Button
+                              className="btn btn-g btn-lg w-100"
+                              onClick={closeNav}
+                            >
+                              {auth?.user?.name}
+                            </Button>
+                          </Link>
+                        )}
+                      </div>
+                    )} */}
 
-                            </nav>
-                        </div>
-
-                        <div className='col-sm-2 part3 d-flex align-items-center'>
-                            <div className='phNo d-flex align-items-center ml-auto'>
-                                <span><HeadphonesOutlinedIcon /></span>
-                                <div className='info ml-3'>
-                                    <h3 className='text-g mb-0'>1900 - 888</h3>
-                                    <p className='mb-0'>24/7 Support Center</p>
-                                </div>
-                            </div>
-                        </div>
+                    <div className="pl-3 pr-3">
+                      <br />
+                      { !auth ? (
+                        <Link to={"/signIn"}>
+                          <Button
+                            className="btn btn-g btn-lg w-100"
+                            onClick={closeNav}
+                          >
+                            Sign In
+                          </Button>
+                        </Link>
+                      ) : (
+                        <Link to={"/signIn"}>
+                          <Button
+                            className="btn btn-g btn-lg w-100"
+                            onClick={closeNav}
+                          >
+                            {auth?.user?.name}
+                          </Button>
+                        </Link>
+                      )}
                     </div>
-                </div>
+                  </>
+                )}
+              </nav>
             </div>
-        </>
-    )
-}
+
+            <div className="col-sm-2 part3 d-flex align-items-center">
+              <div className="phNo d-flex align-items-center ml-auto">
+                <span>
+                  <HeadphonesOutlinedIcon />
+                </span>
+                <div className="info ml-3">
+                  <h3 className="text-g mb-0">1900 - 888</h3>
+                  <p className="mb-0">24/7 Support Center</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
 
 export default Nav;

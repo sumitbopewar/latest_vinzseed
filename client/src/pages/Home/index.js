@@ -76,9 +76,9 @@ const Home = (props) => {
                                 })
 
                             setActiveTabData(arr)
-                            setTimeout(()=>{
-                                setIsLoadingProducts(false);
-                            },[1000]);
+                            // setTimeout(()=>{
+                            //     setIsLoadingProducts(false);
+                            // },[1000]);
                         }
                     }
                 })
@@ -113,6 +113,30 @@ const Home = (props) => {
 
     }, [])
 
+
+    // new api code
+
+    const [products, setProducts] = useState([]);
+    const [page, setPage] = useState(1);
+
+    const getAllProducts = async () => {
+        try {
+        //   setLoading(true);
+          const { data } = await axios.get(
+            `${process.env.REACT_APP_API}/api/v1/product/product-list/${page}`
+          );
+        //   setLoading(false);
+          setProducts(data.products);
+        } catch (error) {
+        //   setLoading(false);
+          console.log(error);
+        }
+      };
+
+      useEffect(() => {
+        getAllProducts();
+      }, [])
+      
 
 
 
@@ -154,8 +178,52 @@ const Home = (props) => {
                         </ul>
                     </div>
 
-
                     <div className={`productRow ${isLoadingProducts===true && 'loading'}`} ref={productRow}>
+
+                        {
+                            products?.map((p) => (
+                                <div
+                                  className="card m-2 text-center shadow"
+                                  style={{ width: "12rem" }}
+                                >
+                                  <a
+                                    onClick={() => navigate(`/product/${p.slug}`)}
+                                    style={{ cursor: "pointer" }}
+                                  >
+                                    <img
+                                    //   src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${p._id}`}
+                                      src={p.catImg}
+                                      className="card-img-top px-3"
+                                      style={{
+                                        height: "250px",
+                                        maxWidth: "100%",
+                                        maxHeight: "250px",
+                                        objectFit: "contain",
+                                      }}
+                                      alt={p.name}
+                                    />
+                                    <div className="card-body text-start">
+                                      <h6 className="card-title">{p.productName.substring(0, 32)}...</h6>
+                    
+                                      <p className="card-text fw-bold">
+                                        {p?.price?.toLocaleString("en-IN", {
+                                          style: "currency",
+                                          currency: "INR",
+                                        })}
+                                      </p>
+                                    </div>
+                                  </a>
+                                </div>
+
+                                    ))
+                            
+                        }
+
+                    </div>
+
+
+
+                    {/* <div className={`productRow ${isLoadingProducts===true && 'loading'}`} ref={productRow}>
 
                         {
                             activeTabData.length !== 0 &&
@@ -169,7 +237,7 @@ const Home = (props) => {
                             })
                         }
 
-                    </div>
+                    </div> */}
 
                 </div>
             </section>

@@ -21,7 +21,7 @@ const Cart = () => {
         if(context.isLogin==="true"){
             getCartData("http://localhost:5000/cartItems");
         }else{
-            history('/');
+            history('/cart');
         }
 
         window.scrollTo(0,0);
