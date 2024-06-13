@@ -14,6 +14,7 @@ import axios from "axios";
 import { MyContext } from "../../App";
 
 const Home = (props) => {
+
   const [prodData, setprodData] = useState(props.data);
   const [catArray, setcatArray] = useState([]);
   const [activeTab, setactiveTab] = useState();
@@ -103,29 +104,7 @@ const Home = (props) => {
     setBestSells(bestSellsArr);
   }, []);
 
-  //   aniket
-  // new api code
 
-  //   const [products, setProducts] = useState([]);
-  //   const [page, setPage] = useState(1);
-
-  //   const getAllProducts = async () => {
-  //     try {
-  //       //   setLoading(true);
-  //       const { data } = await axios.get(
-  //         `${process.env.REACT_APP_API}/api/v1/product/product-list/${page}`
-  //       );
-  //       //   setLoading(false);
-  //       setProducts(data.products);
-  //     } catch (error) {
-  //       //   setLoading(false);
-  //       console.log(error);
-  //     }
-  //   };
-
-  //   useEffect(() => {
-  //     getAllProducts();
-  //   }, []);
 
   return (
     <div style={{ display: "block" }}>
@@ -223,6 +202,7 @@ const Home = (props) => {
           </div>
         </div>
       </section>
+
 
       {/* <section className='homeProducts homeProductsRow2 pt-0'>
                 <div className='container-fluid'>

@@ -6,36 +6,39 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    brand: {
+    price: {
       type: String,
       required: true,
     },
-    slug: {
+    oldPrice: {
       type: String,
+    },
+    weight: [
+      {
+        type: Number,
+      },
+    ],
+    catImg: {
+      type: String,
+      required: true,
+    },
+    discount: {
+      type: String,
+    },
+    brand: {
+      type: String,
+    },
+    productImages: [
+      {
+        type: String,
+      },
+    ],
+    rating: {
+      type: Number,
       required: true,
     },
     description: {
       type: String,
-      required: true,
-    },
-    price: {
-      type: Number,
-      required: true,
-    },
-    oldPrice: {
-      type: Number,
-      required: true,
-    },
-    discount: {
-      type: Number,
-      required: true,
-    },
-    weight: {
-      type: [Number],
-      required: true,
-    },
-    rating: {
-      type: Number,
       required: true,
     },
     category: {
@@ -43,26 +46,12 @@ const productSchema = new mongoose.Schema(
       ref: "Category",
       required: true,
     },
-    catImg: {
+    slug: {
       type: String,
-    },
-    productImages: {
-      type: [String],
       required: true,
-    },
-    quantity: {
-      type: Number,
-      required: true,
-    },
-    // photo: {
-    //   data: Buffer,
-    //   contentType: String,
-    // },
-    shipping: {
-      type: Boolean,
     },
   },
-  
+
   { timestamps: true }
 );
 

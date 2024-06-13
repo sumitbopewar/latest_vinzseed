@@ -4,8 +4,8 @@ import orderModel from "../models/orderModel.js";
 
 import fs from "fs";
 import slugify from "slugify";
-// import braintree from "braintree";
 import dotenv from "dotenv";
+// import braintree from "braintree";
 
 dotenv.config();
 
@@ -19,13 +19,13 @@ dotenv.config();
 
 export const createProductController = async (req, res) => {
   try {
-    const { productName, brand, description, price, oldPrice, discount, weight, rating,  category, catImg, productImages,  quantity, shipping } =
+    const { productName, price, oldPrice, weight, catImg, discount, brand, productImages, rating, description, category  } =
       req.fields;
-    // const { photo } = req.files;
+    
     //Validation
     switch (true) {
       case !productName:
-        return res.status(500).send({ error: "Name is Required" });
+        return res.status(500).send({ error: "productName is Required" });
       case !brand:
         return res.status(500).send({ error: "brand is Required" });
       case !description:
@@ -46,20 +46,13 @@ export const createProductController = async (req, res) => {
         return res.status(500).send({ error: "productimage is Required" });
       case !category:
         return res.status(500).send({ error: "Category is Required" });
-      case !quantity:
-        return res.status(500).send({ error: "Quantity is Required" });
-      // case photo && photo.size > 1000000:
-      //   return res
-      //     .status(500)
-      //     .send({ error: "photo is Required and should be less then 1mb" });
+      
+      
     }
 
     const products = new productModel({ ...req.fields, slug: slugify(productName) });
-    // if (photo) {
-    //   products.photo.data = fs.readFileSync(photo.path);
-    //   products.photo.contentType = photo.type;
-    // }
     await products.save();
+
     res.status(201).send({
       success: true,
       message: "Product Created Successfully",
