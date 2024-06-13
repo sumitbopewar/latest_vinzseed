@@ -143,9 +143,7 @@ function App() {
           )}
           <Header data={data.productData} />
           <Routes>
-            <Route
-              exact={true}
-              path="/"
+            <Route exact={true} path="/"
               element={<Home data={data.productData} />}
             />
             <Route
@@ -167,12 +165,6 @@ function App() {
             <Route exact={true} path="/signIn" element={<SignIn />} />
             <Route exact={true} path="/signUp" element={<SignUp />} />
             <Route exact={true} path="*" element={<NotFound />} />
-
-            {/* <Route path="/dashboard" element={<PrivateRoute />}> */}
-              {/* <Route path="user" element={<Dashboard />} />
-              <Route path="user/orders" element={<Orders />} />
-              <Route path="user/profile" element={<Profile />} /> */}
-            {/* </Route> */}
           </Routes>
           <Footer />
         </MyContext.Provider>
