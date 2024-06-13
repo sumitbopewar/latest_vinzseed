@@ -5,9 +5,9 @@ import morgan from "morgan";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoute.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
-import productRoutes from './routes/productRoutes.js'
-import cors from 'cors';
-
+import productRoutes from "./routes/productRoutes.js";
+import cartItemRoutes from "./routes/cartItemRoutes.js";
+import cors from "cors";
 
 //configure env
 dotenv.config();
@@ -19,7 +19,7 @@ connectDB();
 const app = express();
 
 //middelwares
-app.use(cors())
+app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
 
@@ -27,6 +27,7 @@ app.use(morgan("dev"));
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/category", categoryRoutes);
 app.use("/api/v1/product", productRoutes);
+app.use("/api/v1/cart-item", cartItemRoutes);
 
 //rest api
 app.get("/", (req, res) => {
