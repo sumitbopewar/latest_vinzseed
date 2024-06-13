@@ -19,9 +19,14 @@ import Loader from "./assets/images/loading.gif";
 
 import data from "./data";
 
-
-
-
+import AdminRoute from "../src/components/Routes/AdminRoute";
+import AdminDashboard from "./pages/Admin/AdminDashboard";
+import CreateCategory from "./pages/Admin/CreateCategory";
+import UpdateProduct from "./pages/Admin/UpdateProduct";
+import CreateProducts from "./pages/Admin/CreateProducts";
+import Products from "./pages/Admin/Products";
+import User from "./pages/Admin/User";
+import AdminOrders from "./pages/Admin/AdminOrders";
 
 const MyContext = createContext();
 
@@ -143,7 +148,9 @@ function App() {
           )}
           <Header data={data.productData} />
           <Routes>
-            <Route exact={true} path="/"
+            <Route
+              exact={true}
+              path="/"
               element={<Home data={data.productData} />}
             />
             <Route
@@ -165,6 +172,19 @@ function App() {
             <Route exact={true} path="/signIn" element={<SignIn />} />
             <Route exact={true} path="/signUp" element={<SignUp />} />
             <Route exact={true} path="*" element={<NotFound />} />
+
+            <Route path="/dashboard" element={<AdminRoute />}>
+              <Route path="admin" element={<AdminDashboard />} />
+              <Route
+                path="admin/create-category"
+                element={<CreateCategory />}
+              />
+              <Route path="admin/create-product" element={<CreateProducts />} />
+              <Route path="admin/product/:slug" element={<UpdateProduct />} />
+              <Route path="admin/products" element={<Products />} />
+              <Route path="admin/users" element={<User />} />
+              <Route path="admin/orders" element={<AdminOrders />} />
+            </Route>
           </Routes>
           <Footer />
         </MyContext.Provider>

@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from "react";
-import Layout from "./../../components/Layout/Layout";
 import AdminMenu from "./../../components/Layout/AdminMenu";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { Select } from "antd";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 const { Option } = Select;
 
-const UpdateProduct = () => {
+const CreateProduct = () => {
   const navigate = useNavigate();
-  const params = useParams();
   const [categories, setCategories] = useState([]);
   const [name, setName] = useState("");
   const [brand, setBrand] = useState("");
@@ -19,36 +17,11 @@ const UpdateProduct = () => {
   const [quantity, setQuantity] = useState("");
   const [shipping, setShipping] = useState("");
   const [photo, setPhoto] = useState("");
-  const [id, setId] = useState("");
 
-  //get single product
-  const getSingleProduct = async () => {
-    try {
-      const { data } = await axios.get(
-        `${process.env.REACT_APP_API}/api/v1/product/get-product/${params.slug}`
-      );
-      setName(data.product.name);
-      setId(data.product._id);
-      setDescription(data.product.description);
-      setBrand(data.product.brand);
-      setPrice(data.product.price);
-      setQuantity(data.product.quantity);
-      setShipping(data.product.shipping);
-      setCategory(data.product.category._id);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  useEffect(() => {
-    getSingleProduct();
-    //eslint-disable-next-line
-  }, []);
   //get all category
   const getAllCategory = async () => {
     try {
-      const { data } = await axios.get(
-        `${process.env.REACT_APP_API}/api/v1/category/get-category`
-      );
+      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/v1/category/get-category`);
       if (data?.success) {
         setCategories(data?.category);
       }
@@ -63,7 +36,7 @@ const UpdateProduct = () => {
   }, []);
 
   //create product function
-  const handleUpdate = async (e) => {
+  const handleCreate = async (e) => {
     e.preventDefault();
     try {
       const productData = new FormData();
@@ -72,16 +45,16 @@ const UpdateProduct = () => {
       productData.append("description", description);
       productData.append("price", price);
       productData.append("quantity", quantity);
-      photo && productData.append("photo", photo);
+      productData.append("photo", photo);
       productData.append("category", category);
-      const { data } = axios.put(
-        `${process.env.REACT_APP_API}/api/v1/product/update-product/${id}`,
+      const { data } = axios.post(
+        `${process.env.REACT_APP_API}/api/v1/product/create-product`,
         productData
       );
       if (data?.success) {
         toast.error(data?.message);
       } else {
-        toast.success("Product Updated Successfully");
+        toast.success("Product Created Successfully");
         navigate("/dashboard/admin/products");
       }
     } catch (error) {
@@ -90,30 +63,14 @@ const UpdateProduct = () => {
     }
   };
 
-  //delete a product
-  const handleDelete = async () => {
-    try {
-      let answer = window.prompt("Are You Sure want to delete this product ? ");
-      if (!answer) return;
-      const { data } = await axios.delete(
-        `${process.env.REACT_APP_API}/api/v1/product/delete-product/${id}`
-      );
-      toast.success("Product DEleted Succfully");
-      navigate("/dashboard/admin/products");
-    } catch (error) {
-      console.log(error);
-      toast.error("Something went wrong");
-    }
-  };
   return (
-    <Layout title={"Dashboard - Create Product"}>
       <div className="container-fluid p-5">
         <div className="row">
           <div className="col-md-3">
             <AdminMenu />
           </div>
           <div className="col-md-9">
-            <h1>Update Product</h1>
+            <h1>Add Product</h1>
             <div className="m-1 w-75">
               <Select
                 bordered={false}
@@ -124,7 +81,7 @@ const UpdateProduct = () => {
                 onChange={(value) => {
                   setCategory(value);
                 }}
-                value={category}
+                required
               >
                 {categories?.map((c) => (
                   <Option key={c._id} value={c._id}>
@@ -141,23 +98,15 @@ const UpdateProduct = () => {
                     accept="image/*"
                     onChange={(e) => setPhoto(e.target.files[0])}
                     hidden
+                    required
                   />
                 </label>
               </div>
               <div className="mb-3">
-                {photo ? (
+                {photo && (
                   <div className="text-center">
                     <img
                       src={URL.createObjectURL(photo)}
-                      alt="product_photo"
-                      height={"200px"}
-                      className="img img-responsive"
-                    />
-                  </div>
-                ) : (
-                  <div className="text-center">
-                    <img
-                      src={`${process.env.REACT_APP_API}/api/v1/product/product-photo/${id}`}
                       alt="product_photo"
                       height={"200px"}
                       className="img img-responsive"
@@ -172,6 +121,7 @@ const UpdateProduct = () => {
                   placeholder="write a name"
                   className="form-control"
                   onChange={(e) => setName(e.target.value)}
+                  required
                 />
               </div>
               <div className="mb-3">
@@ -181,16 +131,17 @@ const UpdateProduct = () => {
                   placeholder="write brand name"
                   className="form-control"
                   onChange={(e) => setBrand(e.target.value)}
+                  required
                 />
               </div>
               <div className="mb-3">
                 <textarea
                   type="text"
-                  rows={10}
                   value={description}
                   placeholder="write a description"
                   className="form-control"
                   onChange={(e) => setDescription(e.target.value)}
+                  required
                 />
               </div>
 
@@ -201,6 +152,7 @@ const UpdateProduct = () => {
                   placeholder="write a Price"
                   className="form-control"
                   onChange={(e) => setPrice(e.target.value)}
+                  required
                 />
               </div>
               <div className="mb-3">
@@ -210,6 +162,7 @@ const UpdateProduct = () => {
                   placeholder="write a quantity"
                   className="form-control"
                   onChange={(e) => setQuantity(e.target.value)}
+                  required
                 />
               </div>
               <div className="mb-3">
@@ -222,28 +175,24 @@ const UpdateProduct = () => {
                   onChange={(value) => {
                     setShipping(value);
                   }}
-                  value={shipping ? "yes" : "No"}
+                
+
                 >
                   <Option value="0">No</Option>
                   <Option value="1">Yes</Option>
                 </Select>
               </div>
               <div className="mb-3">
-                <button className="btn btn-primary" onClick={handleUpdate}>
-                  UPDATE PRODUCT
-                </button>
-              </div>
-              <div className="mb-3">
-                <button className="btn btn-danger" onClick={handleDelete}>
-                  DELETE PRODUCT
+                <button className="btn btn-primary" onClick={handleCreate}>
+                  CREATE PRODUCT
                 </button>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </Layout>
+      
   );
 };
 
-export default UpdateProduct;
+export default CreateProduct;
