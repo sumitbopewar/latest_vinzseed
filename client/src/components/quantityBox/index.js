@@ -12,7 +12,7 @@ const QuantityBox = (props) => {
 
     useEffect(() => {
         setcartItems(props.cartItems);
-        //setinputValue(props.item.quantity)
+        setinputValue(props.item.quantity)
     }, [props.cartItems])
 
 

@@ -63,13 +63,13 @@ function App() {
         }, 2000);
       });
 
-      await axios
-        .get(
-          "https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=27dad2d0abd34a22965727ce8d939077"
-        )
-        .then((response) => {
-          console.log(response);
-        });
+      // await axios
+      //   .get(
+      //     "https://newsapi.org/v2/top-headlines?country=in&category=business&apiKey=27dad2d0abd34a22965727ce8d939077"
+      //   )
+      //   .then((response) => {
+      //     console.log(response);
+      //   });
     } catch (error) {
       console.log(error.message);
     }
@@ -89,11 +89,13 @@ function App() {
     item.quantity = 1;
 
     try {
-      await axios.post("http://localhost:5000/cartItems", item).then((res) => {
-        if (res !== undefined) {
-          setCartItems([...cartItems, { ...item, quantity: 1 }]);
-        }
-      });
+      await axios
+        .post("http://localhost:8080/api/v1/cart/cart-items", item)
+        .then((res) => {
+          if (res !== undefined) {
+            setCartItems([...cartItems, { ...item, quantity: 1 }]);
+          }
+        });
     } catch (error) {
       console.log(error);
     }

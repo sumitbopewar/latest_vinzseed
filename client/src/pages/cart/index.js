@@ -7,58 +7,69 @@ import { Button } from "@mui/material";
 import QuantityBox from "../../components/quantityBox";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import { MyContext } from "../../App";
+import { useAuth } from "../../context/auth";
 import axios from "axios";
-
 import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const context = useContext(MyContext);
+  const [auth] = useAuth();
   const history = useNavigate();
 
   useEffect(() => {
-    if (context.isLogin === "true") {
-      getCartData("http://localhost:8080/api/v1/cart-Items");
-    } else {
-      history("/cart");
-    }
+    // context not working
+    // if (context.isLogin === "true") {
+
+    // } else {
+    //   history("/signIn");
+    // }
+
+    getCartData(
+      `http://localhost:8080/api/v1/cart/cart-items/6661ccec394c53cc7ac6ddf8`
+    );
 
     window.scrollTo(0, 0);
   }, []);
 
   const getCartData = async (url) => {
     try {
-      await axios.get(url).then((response) => {
-        setCartItems(response.data);
-      });
+      const response = await axios.get(url);
+      console.log(response.data);
+      setCartItems(response.data);
     } catch (error) {
       console.log(error.message);
     }
   };
 
   const deleteItem = async (id) => {
-    const response = await axios.delete(
-      `http://localhost:8080/cartItems/${id}`
-    );
-    if (response !== null) {
-      getCartData("http://localhost:8080/cart-items");
+    try {
+      await axios.delete(`http://localhost:8080/api/v1/cart/cart-items/${id}`);
+      getCartData(
+        `http://localhost:8080/api/v1/cart/cart-items/${auth.user._id}`
+      );
       context.removeItemsFromCart(id);
+    } catch (error) {
+      console.log(error.message);
     }
   };
 
-  const emptyCart = () => {
-    let response = null;
-    cartItems.length !== 0 &&
-      cartItems.map((item) => {
-        response = axios.delete(
-          `http://localhost:8080/cart-items/${parseInt(item.id)}`
-        );
-      });
-    if (response !== null) {
-      getCartData("http://localhost:8080/cart-items");
+  const emptyCart = async () => {
+    try {
+      await Promise.all(
+        cartItems.map((item) =>
+          axios.delete(
+            `http://localhost:8080/api/v1/cart/cart-items/${item.id}`
+          )
+        )
+      );
+      getCartData(
+        `http://localhost:8080/api/v1/cart/cart-items/${auth.user._id}`
+      );
+      context.emptyCart();
+    } catch (error) {
+      console.log(error.message);
     }
-
-    context.emptyCart();
   };
 
   const updateCart = (items) => {
@@ -89,8 +100,8 @@ const Cart = () => {
                 <div className="left">
                   <h1 className="hd mb-0">Your Cart</h1>
                   <p>
-                    There are <span className="text-g">3</span> products in your
-                    cart
+                    There are <span className="text-g">{cartItems.length}</span>{" "}
+                    products in your cart
                   </p>
                 </div>
 
@@ -117,73 +128,81 @@ const Cart = () => {
 
                     <tbody>
                       {cartItems.length !== 0 &&
-                        cartItems.map((item, index) => {
-                          return (
-                            <tr>
-                              <td width={"50%"}>
-                                <div className="d-flex align-items-center">
-                                  <div className="img">
-                                    <Link to={`/product/${item.id}`}>
-                                      <img
-                                        src={
-                                          item.catImg + "?im=Resize=(100,100)"
-                                        }
-                                        className="w-100"
-                                      />
-                                    </Link>
-                                  </div>
-
-                                  <div className="info pl-4">
-                                    <Link to={`/product/${item.id}`}>
-                                      <h4>{item.productName}</h4>
-                                    </Link>
-                                    <Rating
-                                      name="half-rating-read"
-                                      value={parseFloat(item.rating)}
-                                      precision={0.5}
-                                      readOnly
-                                    />{" "}
-                                    <span className="text-light">
-                                      ({parseFloat(item.rating)})
-                                    </span>
-                                  </div>
+                        cartItems.map((item, index) => (
+                          <tr key={item.id}>
+                            <td width={"50%"}>
+                              <div className="d-flex align-items-center">
+                                <div className="img">
+                                  <Link to={`/product/${item.id}`}>
+                                    <img
+                                      src={
+                                        item.productId.catImg +
+                                        "?im=Resize=(100,100)"
+                                      }
+                                      className="w-100"
+                                      alt={item.productName}
+                                    />
+                                  </Link>
                                 </div>
-                              </td>
 
-                              <td width="20%">
-                                <span>
-                                  Rs: {parseInt(item.price.split(",").join(""))}
-                                </span>
-                              </td>
+                                <div className="info pl-4">
+                                  <Link to={`/product/${item.id}`}>
+                                    <h4>{item.productId.productName}</h4>
+                                  </Link>
+                                  <Rating
+                                    name="half-rating-read"
+                                    value={parseFloat(item.productId.rating)}
+                                    precision={0.5}
+                                    readOnly
+                                  />
+                                  <span className="text-light">
+                                    ({parseFloat(item.productId.rating)})
+                                  </span>
+                                </div>
+                              </div>
+                            </td>
 
-                              <td>
-                                <QuantityBox
-                                  item={item}
-                                  cartItems={cartItems}
-                                  index={index}
-                                  updateCart={updateCart}
-                                />
-                              </td>
+                            <td width="20%">
+                              <span>
+                                Rs:{" "}
+                                {typeof item.productId.price === "string"
+                                  ? parseInt(
+                                      item.productId.price.replace(/,/g, "")
+                                    )
+                                  : 0}
+                              </span>
+                            </td>
 
-                              <td>
-                                <span className="text-g">
-                                  Rs.{" "}
-                                  {parseInt(item.price.split(",").join("")) *
-                                    parseInt(item.quantity)}
-                                </span>
-                              </td>
+                            <td>
+                              <QuantityBox
+                                item={item}
+                                cartItems={cartItems}
+                                index={index}
+                                updateCart={updateCart}
+                              />
+                            </td>
 
-                              <td align="center">
-                                <span
-                                  className="cursor"
-                                  onClick={() => deleteItem(item.id)}
-                                >
-                                  <DeleteOutlineOutlinedIcon />
-                                </span>
-                              </td>
-                            </tr>
-                          );
-                        })}
+                            <td>
+                              <span className="text-g">
+                                Rs.{" "}
+                                {typeof item.productId.price === "string"
+                                  ? parseInt(
+                                      item.productId.price.replace(/,/g, "")
+                                    ) * item.productId.quantity
+                                  : 0}
+                              </span>
+                            </td>
+
+                            <td align="center">
+                              <span
+                                className="cursor"
+                                onClick={() => deleteItem(item.id)}
+                              >
+                                <DeleteOutlineOutlinedIcon />
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
                     </tbody>
                   </table>
                 </div>
@@ -197,8 +216,6 @@ const Cart = () => {
                     <KeyboardBackspaceIcon /> Continue Shopping
                   </Button>
                 </Link>
-                {/* <Button className='btn-g ml-auto' onClick={updateCartData}>
-                    <RefreshIcon /> Update Cart</Button> */}
               </div>
             </div>
 
@@ -210,10 +227,11 @@ const Cart = () => {
                     <span className="text-g">
                       {cartItems.length !== 0 &&
                         cartItems
-                          .map(
-                            (item) =>
-                              parseInt(item.price.split(",").join("")) *
-                              item.quantity
+                          .map((item) =>
+                            typeof item.productId.price === "string"
+                              ? parseInt(item.productId.price.replace(/,/g, "")) *
+                                item.quantity
+                              : 0
                           )
                           .reduce((total, value) => total + value, 0)}
                     </span>
@@ -240,10 +258,11 @@ const Cart = () => {
                     <span className="text-g">
                       {cartItems.length !== 0 &&
                         cartItems
-                          .map(
-                            (item) =>
-                              parseInt(item.price.split(",").join("")) *
-                              item.quantity
+                          .map((item) =>
+                            typeof item.productId.price === "string"
+                              ? parseInt(item.productId.price.replace(/,/g, "")) *
+                                item.quantity
+                              : 0
                           )
                           .reduce((total, value) => total + value, 0)}
                     </span>
