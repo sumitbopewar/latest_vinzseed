@@ -25,9 +25,7 @@ const Cart = () => {
     //   history("/signIn");
     // }
 
-    getCartData(
-      `http://localhost:8080/api/v1/cart/cart-items/6661ccec394c53cc7ac6ddf8`
-    );
+    getCartData(`http://localhost:8080/api/v1/cart/cart-items`);
 
     window.scrollTo(0, 0);
   }, []);
@@ -45,9 +43,7 @@ const Cart = () => {
   const deleteItem = async (id) => {
     try {
       await axios.delete(`http://localhost:8080/api/v1/cart/cart-items/${id}`);
-      getCartData(
-        `http://localhost:8080/api/v1/cart/cart-items/${auth.user._id}`
-      );
+      getCartData(`http://localhost:8080/api/v1/cart/cart-items`);
       context.removeItemsFromCart(id);
     } catch (error) {
       console.log(error.message);
@@ -63,9 +59,7 @@ const Cart = () => {
           )
         )
       );
-      getCartData(
-        `http://localhost:8080/api/v1/cart/cart-items/${auth.user._id}`
-      );
+      getCartData(`http://localhost:8080/api/v1/cart/cart-items`);
       context.emptyCart();
     } catch (error) {
       console.log(error.message);
@@ -229,8 +223,9 @@ const Cart = () => {
                         cartItems
                           .map((item) =>
                             typeof item.productId.price === "string"
-                              ? parseInt(item.productId.price.replace(/,/g, "")) *
-                                item.quantity
+                              ? parseInt(
+                                  item.productId.price.replace(/,/g, "")
+                                ) * item.quantity
                               : 0
                           )
                           .reduce((total, value) => total + value, 0)}
@@ -260,8 +255,9 @@ const Cart = () => {
                         cartItems
                           .map((item) =>
                             typeof item.productId.price === "string"
-                              ? parseInt(item.productId.price.replace(/,/g, "")) *
-                                item.quantity
+                              ? parseInt(
+                                  item.productId.price.replace(/,/g, "")
+                                ) * item.quantity
                               : 0
                           )
                           .reduce((total, value) => total + value, 0)}

@@ -11,17 +11,13 @@ router.post('/create-category', requireSignIn , isAdmin , createCategoryControll
 // update category routes
 router.put('/update-category/:id', requireSignIn , isAdmin , updateCategoryController);
 
-
 //  get all categories  routes
 router.get('/get-category', categoryControlller);
-
 
 // single category routes
 router.get('/single-category/:slug', singleCategoryController);
 
-
 // delete category routes
 router.delete('/delete-category/:id', requireSignIn , isAdmin , deleteCategoryCOntroller);
-
 
 export default router;
