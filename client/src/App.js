@@ -16,6 +16,16 @@ import Cart from "./pages/cart";
 import SignIn from "./pages/auth/login/Login";
 import SignUp from "./pages/auth/register/Register";
 import Loader from "./assets/images/loading.gif";
+import AdminRoute from "../src/components/Routes/AdminRoute";
+import PrivateRoute from "../src/components/Routes/Private";
+import AdminDashboard from "../src/pages/Admin/AdminDashboard";
+import CreateCategory from "../src/pages/Admin/CreateCategory";
+import CreateProducts from "./pages/Admin/CreateProducts";
+import Products from "./pages/Admin/Products";
+import UpdateProduct from "./pages/Admin/UpdateProducts";
+import AdminOrders from "./pages/Admin/AdminOrders";
+
+
 
 import data from "./data";
 
@@ -168,12 +178,29 @@ function App() {
             <Route exact={true} path="/signUp" element={<SignUp />} />
             <Route exact={true} path="*" element={<NotFound />} />
 
-            {/* <Route path="/dashboard" element={<PrivateRoute />}> */}
-              {/* <Route path="user" element={<Dashboard />} />
+            {/* <Route path="/dashboard" element={<PrivateRoute />}>
+              <Route path="user" element={<Dashboard />} />
               <Route path="user/orders" element={<Orders />} />
-              <Route path="user/profile" element={<Profile />} /> */}
-            {/* </Route> */}
+              <Route path="user/profile" element={<Profile />} />
+            </Route> */}
+
+
+
+          {/* Admin panal */}
+            <Route path="/dashboard" element={<AdminRoute />}>
+              <Route path="admin" element={<AdminDashboard />} />
+              <Route
+                path="admin/create-category"
+                element={<CreateCategory />}
+              />
+              <Route path="admin/create-product" element={<CreateProducts />} />
+              <Route path="admin/product/:slug" element={<UpdateProduct />} />
+              <Route path="admin/products" element={<Products />} />
+              {/* <Route path="admin/users" element={<User />} /> */}
+              <Route path="admin/orders" element={<AdminOrders />} />
+            </Route>
           </Routes>
+
           <Footer />
         </MyContext.Provider>
       </BrowserRouter>

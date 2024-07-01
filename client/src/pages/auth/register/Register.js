@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
+import {toast , Toaster } from "react-hot-toast";
 import "./Register.css";
 import { Link } from 'react-router-dom';
 import Box from '@mui/material/Box';
@@ -56,6 +56,7 @@ const Register = () => {
 
   return (
     <>
+     <Toaster position="bottom-center" />
             <section className='signIn mb-5'>
                 <div className="breadcrumbWrapper res-hide">
                     <div className="container-fluid">

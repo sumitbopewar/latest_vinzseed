@@ -52,8 +52,14 @@ const Login = () => {
           token: res.data.token,
         });
         localStorage.setItem("auth", JSON.stringify(res.data));
-        console.log("sign in sucessfully")
-        navigate(location.state || "/");
+        
+        if(res.data.role == 1){
+          navigate(location.state || "/dashboard/admin");
+        }
+        else{
+          navigate(location.state || "/");
+
+        }
 
 
         toast.success("Sign in successfully", 8000);
